@@ -9,7 +9,6 @@ from display import display
 # Create a queue to communicate between threads
 ear_q = queue.Queue()
 speech_q = queue.Queue()
-generate_q = queue.Queue()
 show_q = queue.Queue()
 listening_q = queue.Queue()
 
@@ -20,7 +19,7 @@ producer_thread.start()
 
 
 # Create and start the producer thread
-producer_thread = threading.Thread(target=brain, args=(ear_q,speech_q, generate_q))
+producer_thread = threading.Thread(target=brain, args=(ear_q,speech_q, show_q))
 producer_thread.start()
 
 

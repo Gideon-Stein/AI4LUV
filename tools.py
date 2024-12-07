@@ -4,7 +4,7 @@ from os import listdir
 from os.path import isfile, join
 import subprocess
 import base64
-
+from PIL import Image
 
 def generate_new_image(
         prompt="A man on the left and a woman on the right that lie in a forest. Frontal view, big faces, high resolution, couple, love",
@@ -106,3 +106,8 @@ def enhance_faces(path= "resources/to_display/display.png", out_path="resources/
     )
     with open(out_path, "wb") as file:
         file.write(output.read())
+
+def img_resize():
+    img = Image.open('resources/to_display/display_enhanced.png')
+    img = img.resize((1024,600)) # screen size 
+    img.save('resources/to_display/display_resized.png')

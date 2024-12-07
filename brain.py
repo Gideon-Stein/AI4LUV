@@ -5,11 +5,11 @@ import json
 import pyaudio
 from vosk import Model, KaldiRecognizer
 import time
-from tools import form_prompt, generate_new_image, run_faceswap
+from tools import form_prompt, generate_new_image, run_faceswap, get_compliment, enhance_faces,img_resize
 
 
 
-def brain(ear_q, speech_q,generate_q):
+def brain(ear_q, speech_q,show_q):
     # Path to your model directory
 
 
@@ -19,26 +19,37 @@ def brain(ear_q, speech_q,generate_q):
 
         if result == "wake_up":
             speech_q.put("What do you want darling. I am listening")
+            show_q.put("face")
 
         if result == "love_mode":
             speech_q.put("What do you want to see?")
-            print("put description")
-
         elif  result == "compliment_mode":
-            speech_q.put("You need to stop being such a god dam cutie patotie." )
+            text = get_compliment()
+            speech_q.put(text)
 
         elif result == "music_mode":
-            speech_q.put("EYES. It's the only thing that slowly stops the ache." )
+            show_q.put("speak")
+            speech_q.put("I push my fingers into my EEEEEEEEEYYYYYYYYYYYYSSSSSSS. It's the only thing that slowly stops the ache." )
+            time.sleep(6)
+            show_q.put("face")
 
         elif result == "fail_to_understand":
             speech_q.put("I am old and my hearing is bad. Sorry.")
 
+
         elif "image_description:" in result:
+
             description = result.replace("image_description:", "")
             description = form_prompt(description)
             print(description)
             generate_new_image(prompt=description)
             run_faceswap()
+            enhance_faces()
+            img_resize()
+            speech_q.put("Oh God. It is beautiful.")
+            time.sleep(4)
+            show_q.put("display")
+
 
 
         elif result == "sleep":

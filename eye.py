@@ -11,7 +11,7 @@ move2 = np.load("resources/eyes/blink.npy")
 
 print(move.shape)
 # Create a window
-window = window = pyglet.window.Window(width=1344, height=768)
+window = window = pyglet.window.Window(width=1024, height=600)
 global image
 global counter
 # Load an image
