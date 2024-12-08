@@ -72,7 +72,7 @@ def run_faceswap(
     execute = script_to_run + s + t + o + order
     order = " --face-selector-order left-right"
     execute = script_to_run + s + t + o + order
-    command = "cd facefusion;"  + execute
+    command = "cd facefusion; conda activate facefusion;"  + execute
 
     subprocess.run(command, shell=True)
 
