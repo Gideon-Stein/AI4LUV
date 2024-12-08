@@ -7,4 +7,6 @@ sudo apt --fix-broken install
 sudo apt-get install portaudio19-dev
 conda install portaudio
 conda install conda-forge::libstdcxx-ng
+
+conda install conda-forge::pygame 
 pip install -r requirements.txt

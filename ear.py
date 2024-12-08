@@ -57,35 +57,49 @@ def ear(ear_q):
                         fail_counter = 0
 
                 elif listen_mode == "command":
+
+                    if "sleep mode" in result:
+                        ear_q.put("sleep_mode")
+                        listen_mode = "sleep"
+                    if "memory mode" in result:
+                        ear_q.put("memory_mode")
+                        listen_mode = "sleep"
                     if ("love mode" in result):
                         ear_q.put("love_mode")
+                        time.sleep(5)
                         listen_mode = "description"
-                        time.sleep(7)
+
                     elif ("compliment mode" in result):
                         ear_q.put("compliment_mode")
                         listen_mode = "sleep"
                     elif ("music mode" in result):
                         ear_q.put("music_mode")
-                        listen_mode = "sleep"
                     else:
                         fail_counter +=1 
-                        if fail_counter == 10:
+                        if fail_counter == 5:
                             ear_q.put("fail_to_understand")
-                        if fail_counter == 20: 
-                            ear_q.put("sleep")
+                        if fail_counter == 10: 
+                            ear_q.put("auto_sleep")
                             listen_mode = "sleep"
 
                 elif listen_mode == "description":
 
                     if "reset" in result:
+                        ear_q.put("reset_description")
+                        time.sleep(5)
                         short_memory = []
 
                     elif "that's it" in result:
-                        desc = ",".join(short_memory)
-                        ear_q.put("image_description:" + desc)
                         listen_mode = "sleep"
+                        desc = ",".join(short_memory)
+                        # quick bugfix to remove own voice: 
+                        desc = desc.replace("what do you want to see", "")
+                        desc = desc.replace("what", "")
+                        desc = desc.replace("do", "")
+                        desc = desc.replace("you", "")
+                        desc = desc.replace("want", "")
+                        ear_q.put("image_description:" + desc)
                         short_memory = []
-                        print("Description delivered:", "image_description:" + desc)
                     else:
                         short_memory.append(text)
 

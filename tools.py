@@ -22,6 +22,26 @@ def generate_new_image(
     # Save the generated image
     with open("resources/generated/" + str(datetime.datetime.now()).replace(" ", "") + ".png", 'wb') as f:
         f.write(output[0].read())
+
+
+
+def generate_starting_image(
+        prompt="A frog that is holding a sign that says 'Für Dajana' in the style of van gogh",
+        model="black-forest-labs/flux-schnell"
+):
+
+    output = replicate.run(
+    model,
+    input={
+        "prompt": prompt,
+        "aspect_ratio": "16:9"
+
+           },
+    )
+    # Save the generated image
+    with open("resources/starting/" + "starting.png", 'wb') as f:
+        f.write(output[0].read())
+    
     
 
 def run_faceswap(
@@ -107,7 +127,7 @@ def enhance_faces(path= "resources/to_display/display.png", out_path="resources/
     with open(out_path, "wb") as file:
         file.write(output.read())
 
-def img_resize():
-    img = Image.open('resources/to_display/display_enhanced.png')
+def img_resize(in_p= 'resources/to_display/display_enhanced.png', out_p='resources/to_display/display_resized.png'):
+    img = Image.open(in_p)
     img = img.resize((1024,600)) # screen size 
-    img.save('resources/to_display/display_resized.png')
+    img.save(out_p)

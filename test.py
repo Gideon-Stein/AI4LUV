@@ -1,4 +1,4 @@
-from display import display
+from display_2 import display
 import queue
 
 show_q = queue.Queue()
