@@ -4,6 +4,6 @@
 
 cd /
 cd home/stein/AI4LLUV
-sudo conda activate ai4luv_operational 
-sudo python main.py
+conda activate ai4luv_operational 
+python main.py
 cd /
