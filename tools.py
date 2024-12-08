@@ -60,7 +60,7 @@ def run_faceswap(
     o = " -o ../" + intermediate_path + "/step_1.png" 
     order = " --face-selector-order right-left"
     execute = script_to_run + s + t + o + order
-    command = "cd facefusion;"  + execute
+    command = "cd facefusion; . ~/miniconda3/etc/profile.d/conda.sh; conda activate facefusion;"  + execute
 
     subprocess.run(command, shell=True)
 
@@ -72,7 +72,7 @@ def run_faceswap(
     execute = script_to_run + s + t + o + order
     order = " --face-selector-order left-right"
     execute = script_to_run + s + t + o + order
-    command = "cd facefusion; conda activate facefusion;"  + execute
+    command = "cd facefusion; . ~/miniconda3/etc/profile.d/conda.sh; conda activate facefusion;"  + execute
 
     subprocess.run(command, shell=True)
 
