@@ -4,6 +4,7 @@ from os import listdir
 from os.path import isfile, join
 import subprocess
 import base64
+import numpy as np
 from PIL import Image
 
 def generate_new_image(
@@ -101,11 +102,51 @@ def get_compliment(prompt=  "I need a cheesy compliment about Dajana , a beautif
 
 
 def form_prompt(prompt):
+    # garantueed.
+
     a = "A picture of a man on the left and a woman on the right. They both look very happy together."
-    b = "The man is extremely ugly."
-    c = "They are both german looking."
-    d = "There are no other people in the image."
-    return a + b + c + prompt + ", high resolution, happy, uncanny valley"
+    b = " They are both german looking."
+    c = " There are no other people in the image."
+    d = " They are arround 30 years old."
+    out = a+b+c+d
+    # potential adds.
+
+    biom_chance = np.random.randint(0,40)
+
+    if biom_chance < 5: 
+        out  = out + " They stand on a beautiful mountain."
+    elif biom_chance < 10 and biom_chance >=5:
+        out = out + " They stand in the black forest."
+    elif biom_chance < 15 and biom_chance >=10:
+        out = out + " They stand in a buzzling jungle."
+    elif biom_chance < 20 and biom_chance >=15:
+        out = out + " They stand in a hot desert."
+    elif biom_chance < 25 and biom_chance >=20:
+        out = out + " They stand on a white beach."
+    elif biom_chance < 30 and biom_chance >=25:
+        out = out + " They stand in a busy city."
+    elif biom_chance < 35 and biom_chance >=30:
+        out = out + " They stand in on Mars."
+    elif biom_chance >=35:
+        out = out + " They stand in the jungle."
+
+
+    if np.random.randint(0, 100) <= 25:
+        out  = out + " Full body shot"
+    if np.random.randint(0, 100) <= 10:
+        out = out + " The woman wears a traditional Black forest hat"
+    if np.random.randint(0, 100) <= 10:
+        out = out + " The man holds a sign that says: 'Dajana is a cutie'."
+    if np.random.randint(0, 100) <= 10:
+        final_prompt = out + " " + prompt +  ". The picture is painted in the style of Vincent van Gogh."
+    elif np.random.randint(0, 100) <= 10:
+        final_prompt = out + " " + prompt +  ". The picture is painted in the style of Salvador Dali."
+    elif np.random.randint(0, 100) <= 10:
+        final_prompt = out + " " + prompt +  ". The picture is painted in the style of a kindergarden kid."
+    else:
+        final_prompt = out + " " + prompt +  ". High resolution, professional photography, dynamic shot, sharp and detailed background."  
+    print(final_prompt)
+    return final_prompt
 
 
 
