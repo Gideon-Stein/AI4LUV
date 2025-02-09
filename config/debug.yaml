@@ -1,0 +1,8 @@
+defaults:
+  - _self_
+  - ear: base
+  - voice: base
+  - brain: base
+  - display: base
+
+mode: "brain"

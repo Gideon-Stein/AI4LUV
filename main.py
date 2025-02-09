@@ -1,37 +1,37 @@
 import threading
 import queue
-import time
-from ear import ear
-from voice import voice
-from brain import brain
-from display import display
+from resources.ear import ear
+from resources.voice import voice
+from resources.brain import brain
+from resources.display import display
+import hydra
+from omegaconf import DictConfig
 
-# Create a queue to communicate between threads
-ear_q = queue.Queue()
-speech_q = queue.Queue()
-show_q = queue.Queue()
-listening_q = queue.Queue()
-
-
-# Create and start the producer thread
-producer_thread = threading.Thread(target=ear, args=(ear_q,))
-producer_thread.start()
+# Example script to benchmark causal discovery methods.
+@hydra.main(version_base=None, config_path="config", config_name="main.yaml")
+def main(cfg: DictConfig):
 
 
-# Create and start the producer thread
-producer_thread = threading.Thread(target=brain, args=(ear_q,speech_q, show_q))
-producer_thread.start()
+    print(cfg)
+    # Create a queue to communicate between threads
+    ear_q = queue.Queue()
+    speech_q = queue.Queue()
+    show_q = queue.Queue()
+
+    ear_thread = threading.Thread(target=ear, args=(ear_q,cfg.ear))
+    ear_thread.start()
+
+    brain_thread = threading.Thread(target=brain, args=(ear_q,speech_q, show_q,cfg.brain))
+    brain_thread.start()
+
+    voice_thread = threading.Thread(target=voice, args=(speech_q,cfg.voice))
+    voice_thread.start()
+
+    display_thread = threading.Thread(target=display, args=(show_q,cfg.display))
+    display_thread.start()
 
 
-# Create and start the consumer thread
-consumer_thread = threading.Thread(target=voice, args=(speech_q,))
-consumer_thread.start()
+  
 
-
-# Create and start the consumer thread
-consumer_thread = threading.Thread(target=display, args=(show_q,))
-consumer_thread.start()
-
-# Wait for both threads to finish
-producer_thread.join()
-consumer_thread.join()
+if __name__ == "__main__":
+    main()

@@ -10,3 +10,4 @@ conda install conda-forge::libstdcxx-ng
 
 conda install conda-forge::pygame 
 pip install -r requirements.txt
+pythonc

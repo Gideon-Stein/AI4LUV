@@ -1,0 +1,2 @@
+local_faceswap: False
+conda_sh_location: . ~/anaconda3/etc/profile.d/conda.sh
