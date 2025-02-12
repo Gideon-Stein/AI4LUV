@@ -9,12 +9,12 @@ from PIL import Image
 import cv2
 import asyncio
 from joblib import Parallel, delayed
-
-
+import copy
+from aiohttp import ClientSession
 
 def generate_new_image(
         prompt="A man on the left and a woman on the right that lie in a forest. Frontal view, big faces, high resolution, couple, love",
-        model="black-forest-labs/flux-schnell"
+        model="black-forest-labs/flux-dev"
 ):
 
     output = replicate.run(
@@ -33,7 +33,7 @@ def generate_new_image(
 
 def generate_starting_image(
         prompt="A frog that is holding a sign that says 'Für Dajana' in the style of van gogh",
-        model="black-forest-labs/flux-schnell"
+        model="black-forest-labs/flux-dev"
 ):
 
     output = replicate.run(
@@ -109,7 +109,17 @@ def deepfake_on_replicate(cfg=None):
     f1 =detections[1][0].astype(int)[:4]
     f2 =detections[1][1].astype(int)[:4]
     # apis only do single face swap. in o
-    t = 50
+    
+    # order by height but we need the width
+    print(f1, f2)
+    if f1[1] < f2[1]:
+        pass
+    else:
+        save = copy.deepcopy(f1)
+        f1 = f2
+        f2 = save
+    print(f1, f2)
+    t = 20
     replace1 = img.copy()
     replace2 = img.copy()
 
@@ -123,7 +133,7 @@ def deepfake_on_replicate(cfg=None):
     im.save("temp2.jpeg")
 
     input1 = {
-        "swap_image": image_to_format("static/base_faces/D1.jpg"),
+        "swap_image": image_to_format("static/base_faces/D2.jpg"),
         "input_image": image_to_format("temp1.jpeg")
     }
 
@@ -135,9 +145,11 @@ def deepfake_on_replicate(cfg=None):
 
     model = "cdingram/face-swap:d1d6ea8c8be89d664a07a457526f7128109dee7030fdac424788d762c71ed111"
 
-    preds = []
-    preds.append(replicate.run(model, input1))
-    preds.append(replicate.run(model, input2))
+    preds = asyncio.run(get_face_swap(model,[input1,input2])) 
+
+    # preds = []
+    # preds.append(replicate.run(model, input1))
+    # preds.append(replicate.run(model, input2))
 
     with open("output1.jpg", "wb") as file:
         file.write(preds[0].read())
@@ -154,6 +166,21 @@ def deepfake_on_replicate(cfg=None):
     im = Image.fromarray(img[:,:,::-1])
     im.save("static/to_display/display.png")
 
+
+async def face_swap_single(model: str, inp, queue: asyncio.Queue):
+    async with ClientSession() as session:
+        result = replicate.run(model, inp)
+        await queue.put(result)
+
+async def get_face_swap(model,inputs):
+    results = []
+    queue = asyncio.Queue()
+    async with asyncio.TaskGroup() as group:
+        for inp in inputs:
+            group.create_task(face_swap_single(model, inp, queue))
+    while not queue.empty():
+        results.append(await queue.get())
+    return results
 
 def get_compliment(prompt=  "I need a cheesy compliment about Dajana , a beautiful young lady that has blond hair, blue eyes, is tiny, has tattos, and has a big bossom. She likes Rock music, the black forest, africa and saving money. She is an architect. Please make it really short."):
 

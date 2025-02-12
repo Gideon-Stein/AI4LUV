@@ -1,8 +1,8 @@
 defaults:
   - _self_
-  - ear: base
-  - voice: base
-  - brain: base
-  - display: base
+  - ear: debug
+  - voice: debug
+  - brain: debug
+  - display: debug
 
 mode: "brain"
